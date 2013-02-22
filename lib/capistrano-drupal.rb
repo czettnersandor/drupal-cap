@@ -51,7 +51,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       and sites/default/files directory to be correctly linked to the shared directory on a new deployment."
     task :symlink_shared do
       ["files", "private", "settings.php"].each do |asset|
-        run "rm -rf #{app_path}/#{asset} && ln -nfs #{shared_path}/#{asset} #{app_path}/sites/default/#{asset}"
+        run "rm -rf #{latest_release}/#{asset} && ln -nfs #{shared_path}/#{asset} #{latest_release}/sites/default/#{asset}"
       end
     end
   end
@@ -76,29 +76,29 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     desc "Backup the database"
     task :backupdb, :on_error => :continue do
-      run "#{drush_cmd} -r #{app_path} bam-backup"
+      run "#{drush_cmd} -r #{latest_release} bam-backup"
     end
 
     desc "Run Drupal database migrations if required"
     task :updatedb, :on_error => :continue do
-      run "#{drush_cmd} -r #{app_path} updatedb -y"
+      run "#{drush_cmd} -r #{latest_release} updatedb -y"
     end
 
     desc "Clear the drupal cache"
     task :cache_clear, :on_error => :continue do
-      run "#{drush_cmd} -r #{app_path} cc all"
+      run "#{drush_cmd} -r #{latest_release} cc all"
     end
     
     desc "Set the site offline"
     task :site_offline, :on_error => :continue do
-      run "#{drush_cmd} -r #{app_path} vset site_offline 1 -y"
-      run "#{drush_cmd} -r #{app_path} vset maintenance_mode 1 -y"
+      run "#{drush_cmd} -r #{latest_release} vset site_offline 1 -y"
+      run "#{drush_cmd} -r #{latest_release} vset maintenance_mode 1 -y"
     end
 
     desc "Set the site online"
     task :site_online, :on_error => :continue do
-      run "#{drush_cmd} -r #{app_path} vset site_offline 0 -y"
-      run "#{drush_cmd} -r #{app_path} vset maintenance_mode 0 -y"
+      run "#{drush_cmd} -r #{latest_release} vset site_offline 0 -y"
+      run "#{drush_cmd} -r #{latest_release} vset maintenance_mode 0 -y"
     end
 
   end
