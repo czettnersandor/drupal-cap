@@ -84,6 +84,18 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "#{drush_cmd} -r #{latest_release} vset maintenance_mode 0 -y"
     end
 
+    desc "Copy local database to the server"
+    task :copy_local do
+      sql = %x[/usr/bin/drush sql-dump]; success = $?.success?
+      if success
+        drush.site_offline
+        put sql, "#{latest_release}/sqldump-capistrano-drupal.sql"
+        run "`#{drush_cmd} -r #{latest_release} sql-connect` < sqldump-capistrano-drupal.sql"
+        run "rm #{latest_release}/sqldump-capistrano-drupal.sql"
+        drush.site_online
+      end
+      
+    end
   end
   
 end
