@@ -90,7 +90,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       if success
         drush.site_offline
         put sql, "#{latest_release}/sqldump-capistrano-drupal.sql"
-        run "`#{drush_cmd} -r #{latest_release} sql-connect` < sqldump-capistrano-drupal.sql"
+        run "`#{drush_cmd} -r #{latest_release} sql-connect` < #{latest_release}/sqldump-capistrano-drupal.sql"
         run "rm #{latest_release}/sqldump-capistrano-drupal.sql"
         drush.site_online
       end
