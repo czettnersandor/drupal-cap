@@ -96,6 +96,15 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
       
     end
+
+    desc "Copy server database to local"
+    task :copy_server do
+      run "#{drush_cmd} -r #{latest_release} sql-dump > #{latest_release}/sqldump-capistrano-drupal.sql"
+      get "#{latest_release}/sqldump-capistrano-drupal.sql", "sqldump-capistrano-drupal.sql"
+      run "rm #{latest_release}/sqldump-capistrano-drupal.sql"
+      sql = %x[`/usr/bin/drush sql-connect` < sqldump-capistrano-drupal.sql]; success = $?.success?
+    end
+
   end
   
 end

@@ -6,7 +6,7 @@ Credit goes to railsless-deploy for many ideas here.
 
 ## Installation
 
-    # gem install cap-drupal
+    # gem install drupal-cap
     
 ## Usage
 
