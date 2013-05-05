@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'drupal-cap'
-  s.version     = '0.1.10'
+  s.version     = '0.1.11'
   s.summary     = "Capistrano tasks for Drupal"
   s.description = "Capistrano task collection for Drupal development"
   s.authors     = ["Sandor Czettner"]
