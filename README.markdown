@@ -15,7 +15,7 @@ Open your application's `Capfile` and make it begin like this:
     require 'rubygems'
     require 'railsless-deploy'
     require 'drupal-cap'
-    load    'config/deploy'
+    load 'sites/default/deploy'
 
 You should then be able to proceed as you would usually, you may want to familiarise yourself with the truncated list of tasks, you can get a full list with:
 
@@ -31,3 +31,43 @@ The deployment script expects that sites/default/files and sites/default/setting
 - Use drush aliases
 - Support install profiles
 - Support composer
+
+An example sites/default/deploy.rb
+
+    set :application, "mydrupalproject.hu"
+    set :repository,  "ssh://git@git.mygitserver.hu:2222/mydrupalproject"
+    set :branch,      "master"
+    set :scm,         :git
+    set :deploy_via,  :remote_cache
+
+    set :deploy_to,   "/var/www/mydrupalproject"
+
+    # X, Y, Z have login permissions for this user (public key)
+    set :user, "serveruser"
+    set :port, 2222
+
+    # set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
+    # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+
+    role :web, "mydrupalproject.hu"                          # Your HTTP server, Apache/etc
+    role :app, "mydrupalproject.hu"                          # This may be the same as your `Web` server
+
+    set :keep_releases, 5
+
+    set :use_sudo, false
+    set :copy_exclude, [".git"]
+
+    # required for cPanel servers (removing writable by group permission)
+    after 'deploy:create_symlink', 'cpanel:fixchmod'
+
+    desc <<-DESC
+      Fix file permissions for cPanel
+    DESC
+    namespace :cpanel do
+      task :fixchmod, :roles => [:web, :app] do
+        run "chmod g-w #{current_path}/index.php"
+        run "chmod g-w #{current_path}/cron.php"
+        run "chmod g-w #{latest_release}"
+      end
+
+    end
