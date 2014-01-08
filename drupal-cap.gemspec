@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
     "drupal-cap.gemspec",
     "lib/drupal-cap.rb"
   ]
-  s.homepage    = 'https://github.com/czettnersandor/capistrano-drupal'
+  s.homepage    = 'https://github.com/czettnersandor/cap-drupal'
 end
